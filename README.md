@@ -1,3 +1,32 @@
+## What We Did (Simple Overview)
+
+In this setup, we created a small local server system to understand how web requests work.
+
+- We installed **Nginx** on our local machine.
+- We created a simple backend application using Python.
+- Nginx was configured to receive requests from the browser.
+- Nginx forwarded those requests to the backend application.
+- The backend processed the request and sent a response.
+- Nginx returned that response back to the user.
+
+This setup shows how a real server works using a reverse proxy.
+
+### Request Flow
+
+Browser  
+→ Nginx Server  
+→ Backend Application  
+→ Nginx  
+→ Browser
+
+### Purpose
+
+The goal of this setup was to understand:
+- how a server receives requests
+- how requests are forwarded internally
+- how responses are returned to users
+
+This is the same concept used in real production systems.
 
 
 ---
