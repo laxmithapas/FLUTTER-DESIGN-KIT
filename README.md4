@@ -1,0 +1,492 @@
+This is the right mindset.
+
+You don’t want “commands memory”.
+You want concept + flow + implementation steps.
+
+Below is your complete reference guide.
+You can reuse this anytime in future to rebuild everything from scratch.
+
+
+---
+
+📘 COMPLETE DEVOPS SETUP REFERENCE GUIDE
+
+(Ubuntu + Docker + Kubernetes + Custom App Deployment)
+
+
+---
+
+1️⃣ Linux Dual Boot Setup (Windows + Ubuntu)
+
+🔹 What is Dual Boot?
+
+Dual boot means:
+
+Two operating systems installed on same machine
+
+You choose OS at startup (GRUB menu)
+
+
+Used because:
+
+Windows → personal usage
+
+Ubuntu → development & DevOps tools
+
+
+
+---
+
+🔹 High-Level Process
+
+1. Shrink Windows partition (create free space)
+
+
+2. Create bootable Ubuntu USB
+
+
+3. Install Ubuntu in free space
+
+
+4. Install GRUB bootloader
+
+
+5. Configure UEFI boot entry
+
+
+
+
+---
+
+🔹 Step-by-Step Implementation
+
+1. Shrink Windows Partition
+
+In Windows:
+
+Open Disk Management
+
+Right-click main partition
+
+Click “Shrink Volume”
+
+Create ~50GB free space
+
+
+Do NOT format it.
+
+
+---
+
+2. Create Bootable USB
+
+Use Rufus:
+
+Partition scheme: GPT
+
+Target system: UEFI
+
+File system: FAT32
+
+
+
+---
+
+3. Install Ubuntu
+
+Boot from USB → Install Ubuntu
+
+Choose:
+
+“Something else”
+
+Select free space
+
+Create:
+
+Ext4
+
+Mount point: /
+
+Size: 50GB
+
+
+Bootloader device:
+
+/dev/nvme0n1 (entire disk)
+
+
+
+Finish installation.
+
+
+---
+
+4. Fix Boot (if Windows loads directly)
+
+Boot → F9 → Boot From EFI File →
+EFI → ubuntu → shimx64.efi
+
+Inside Ubuntu:
+
+sudo grub-install
+sudo update-grub
+
+Now dual boot works.
+
+
+---
+
+2️⃣ Docker – Containerization
+
+🔹 What is Docker?
+
+Docker packages:
+
+Application
+
+Dependencies
+
+Runtime
+
+
+Into a portable unit called Image.
+
+Running image → Container.
+
+
+---
+
+🔹 Why Use Docker?
+
+Solves:
+
+> “It works on my machine but not on server.”
+
+
+
+
+---
+
+🔹 Install Docker
+
+curl -fsSL https://get.docker.com | sudo bash
+sudo usermod -aG docker $USER
+newgrp docker
+
+Verify:
+
+docker --version
+
+
+---
+
+🔹 How Containerization Works
+
+Traditional: App → OS → Hardware
+
+Docker: App → Container → Docker Engine → OS → Hardware
+
+Each container:
+
+Is isolated
+
+Shares host kernel
+
+Lightweight (faster than VM)
+
+
+
+---
+
+3️⃣ Kubernetes & Minikube
+
+🔹 What is Kubernetes?
+
+Kubernetes:
+
+Container orchestration system
+
+Manages containers at scale
+
+Handles:
+
+Scaling
+
+Self-healing
+
+Networking
+
+Load balancing
+
+
+
+
+---
+
+🔹 What is Minikube?
+
+Minikube:
+
+Runs a single-node Kubernetes cluster locally
+
+Used for development/testing
+
+
+
+---
+
+🔹 Install kubectl
+
+sudo snap install kubectl --classic
+
+
+---
+
+🔹 Install Minikube
+
+curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+sudo install minikube-linux-amd64 /usr/local/bin/minikube
+
+Start cluster:
+
+minikube start
+
+Verify:
+
+kubectl get nodes
+
+If STATUS = Ready → cluster works.
+
+
+---
+
+4️⃣ Building a Node.js Application
+
+🔹 Create Project
+
+mkdir devops-app
+cd devops-app
+
+
+---
+
+🔹 app.js
+
+const http = require('http');
+
+const server = http.createServer((req, res) => {
+  res.writeHead(200, {'Content-Type': 'text/plain'});
+  res.end('Hello from DevOps Kubernetes 🚀\n');
+});
+
+server.listen(3000);
+
+
+---
+
+🔹 package.json
+
+{
+  "name": "devops-app",
+  "version": "1.0.0",
+  "main": "app.js"
+}
+
+
+---
+
+5️⃣ Dockerizing the App
+
+🔹 Dockerfile
+
+FROM node:18-alpine
+WORKDIR /app
+COPY . .
+EXPOSE 3000
+CMD ["node", "app.js"]
+
+
+---
+
+🔹 Build Image
+
+docker build -t devops-app:v1 .
+
+
+---
+
+🔹 Run Container
+
+docker run -p 3000:3000 devops-app:v1
+
+Access:
+
+http://localhost:3000
+
+App runs inside container.
+
+
+---
+
+6️⃣ Deploying to Kubernetes
+
+🔹 Step 1 – Use Minikube Docker
+
+eval $(minikube docker-env)
+docker build -t devops-app:v1 .
+
+Now image exists inside Kubernetes environment.
+
+
+---
+
+🔹 Step 2 – Create Deployment
+
+kubectl create deployment devops-app --image=devops-app:v1
+
+What Deployment does:
+
+Creates Pod
+
+Manages replicas
+
+Restarts if crashes
+
+
+
+---
+
+🔹 Step 3 – Expose Service
+
+kubectl expose deployment devops-app --type=NodePort --port=3000
+
+What Service does:
+
+Gives network access
+
+Maps internal pod port to external port
+
+
+
+---
+
+🔹 Step 4 – Access Application
+
+minikube service devops-app
+
+Browser opens app.
+
+Now app runs inside Kubernetes.
+
+
+---
+
+7️⃣ Demonstrating Scaling
+
+🔹 Scale to 3 Replicas
+
+kubectl scale deployment devops-app --replicas=3
+kubectl get pods
+
+Kubernetes now runs 3 copies.
+
+If one crashes: Kubernetes auto-recreates it.
+
+That is orchestration.
+
+
+---
+
+8️⃣ Architecture Summary
+
+You built this:
+
+Developer
+↓
+Dockerfile
+↓
+Docker Image
+↓
+Kubernetes Deployment
+↓
+Pods
+↓
+Service
+↓
+User Access
+
+
+---
+
+9️⃣ How To Explain In Interview
+
+If asked:
+
+What is Docker?
+
+> Docker is a containerization platform that packages application and dependencies into portable images.
+
+
+
+What is Kubernetes?
+
+> Kubernetes is a container orchestration system that manages container deployment, scaling, and networking.
+
+
+
+What is Minikube?
+
+> Minikube runs a local single-node Kubernetes cluster for development.
+
+
+
+How does scaling work?
+
+> Kubernetes maintains desired state defined in Deployment. When replicas are increased, it automatically creates additional Pods.
+
+
+
+
+---
+
+🔟 What You Have Achieved
+
+You:
+
+Installed Linux dual boot
+
+Installed Docker
+
+Installed Kubernetes
+
+Built an application
+
+Containerized it
+
+Deployed it to cluster
+
+Exposed it via service
+
+Demonstrated scaling
+
+
+That is full DevOps beginner workflow.
+
+
+---
+
+If you want next level reference, I can prepare:
+
+CI/CD pipeline explanation
+
+Jenkins integration guide
+
+Terraform + Kubernetes infra explanation
+
+Architecture diagram explanation
+
+20 interview Q&A based on what you built
+
+
+Tell me which direction you want.
