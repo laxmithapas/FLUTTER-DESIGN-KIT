@@ -1,0 +1,205 @@
+Perfect. I’ll write this like a clean technical report you can use for documentation, internship submission, or academic reference.
+
+---
+
+# 📄 DevOps Environment Setup Report
+
+**System:** HP Victus (Dual Boot – Windows + Ubuntu 22.04)
+**Objective:** Create a complete local DevOps development environment
+
+---
+
+# 1️⃣ Operating System Setup
+
+## Dual Boot Configuration
+
+* Installed **Ubuntu 22.04 LTS** alongside Windows
+* Created dedicated **50GB ext4 partition**
+* Configured EFI boot manually
+* Resolved UEFI boot priority issue
+* Successfully booting Ubuntu via GRUB
+
+### Result:
+
+✔ Stable dual-boot system
+✔ Ubuntu 22.04 fully functional
+✔ 46GB total allocated (33GB free)
+
+---
+
+# 2️⃣ Base System Preparation
+
+Updated system packages:
+
+```bash
+sudo apt update && sudo apt upgrade -y
+```
+
+Installed essential tools:
+
+* curl
+* wget
+* git
+* unzip
+* gnupg
+* software-properties-common
+
+---
+
+# 3️⃣ Docker Installation
+
+Installed Docker Engine.
+
+Verified:
+
+```bash
+docker --version
+```
+
+Configured permissions:
+
+```bash
+sudo usermod -aG docker $USER
+```
+
+Resolved Docker permission issue.
+
+### Result:
+
+✔ Docker daemon running
+✔ Docker CLI accessible without sudo
+
+---
+
+# 4️⃣ Kubernetes Setup (Local Cluster)
+
+Installed:
+
+* kubectl
+* Minikube
+
+Started cluster:
+
+```bash
+minikube start
+```
+
+Cluster status:
+
+```bash
+kubectl get nodes
+```
+
+Output:
+
+```id="nodecheck"
+minikube   Ready   control-plane
+```
+
+### Result:
+
+✔ Kubernetes control plane running
+✔ Local cluster operational
+
+---
+
+# 5️⃣ Application Deployment Test
+
+Deployed Nginx:
+
+```bash
+kubectl create deployment nginx --image=nginx
+kubectl expose deployment nginx --type=NodePort --port=80
+minikube service nginx
+```
+
+Successfully accessed service via NodePort.
+
+### Result:
+
+✔ Container deployed
+✔ Service exposed
+✔ Verified working web server
+
+---
+
+# 6️⃣ Terraform Installation
+
+Installed Terraform using official HashiCorp repository.
+
+Verified:
+
+```bash
+terraform -version
+```
+
+### Result:
+
+✔ Infrastructure as Code tool ready
+
+---
+
+# 7️⃣ Issues Faced & Resolutions
+
+| Issue                             | Resolution                      |
+| --------------------------------- | ------------------------------- |
+| Ubuntu not appearing in boot menu | Manual EFI boot via shimx64.efi |
+| Docker permission denied          | Added user to docker group      |
+| Minikube driver not healthy       | Fixed Docker permissions        |
+| Wi-Fi driver issue                | Identified Realtek chipset      |
+
+---
+
+# 8️⃣ Current DevOps Stack
+
+Your system now includes:
+
+* Ubuntu 22.04 LTS
+* Git
+* Docker
+* Docker Compose
+* Kubernetes (kubectl)
+* Minikube
+* Terraform
+
+This is a complete beginner-to-intermediate DevOps lab environment.
+
+---
+
+# 9️⃣ Skills Demonstrated
+
+* UEFI troubleshooting
+* Partition management
+* Bootloader configuration
+* Linux administration
+* Containerization (Docker)
+* Kubernetes cluster setup
+* Service exposure using NodePort
+* Infrastructure tool installation
+
+---
+
+# 🔟 Next Possible Steps
+
+* Install Jenkins (CI/CD)
+* Build custom Docker image
+* Deploy multi-container app
+* Setup Helm
+* Create Terraform AWS project
+* Configure Nginx reverse proxy
+
+---
+
+# Final Status
+
+System is stable.
+Kubernetes cluster running.
+DevOps environment fully operational.
+
+---
+
+If you want, I can now:
+
+* Convert this into a **PDF project report**
+* Format it as a **README.md**
+* Or write it as a **resume-ready experience section**
